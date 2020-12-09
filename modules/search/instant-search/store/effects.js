@@ -34,7 +34,7 @@ function makeSearchAPIRequest( action, store ) {
 
 function initializeQueryValues( action, store ) {
 	const queryObject = getQuery();
-	store.dispatch( setSearchQuery( queryObject.s ) );
+	store.dispatch( setSearchQuery( queryObject.s, false ) );
 }
 
 /**
@@ -44,6 +44,10 @@ function initializeQueryValues( action, store ) {
  * @param {object} store -  Store instance.
  */
 function updateSearchQueryString( action ) {
+	if ( action.propagateToWindow === false ) {
+		return;
+	}
+
 	const queryObject = getQuery();
 	if ( action.query === '' ) {
 		delete queryObject.s;

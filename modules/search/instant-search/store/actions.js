@@ -63,9 +63,10 @@ export function initializeQueryValues() {
  *
  * @returns {object} Action object.
  */
-export function setSearchQuery( query ) {
+export function setSearchQuery( query, propagateToWindow = true ) {
 	return {
 		type: 'SET_SEARCH_QUERY',
 		query,
+		propagateToWindow,
 	};
 }

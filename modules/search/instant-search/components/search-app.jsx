@@ -72,8 +72,7 @@ class SearchApp extends Component {
 	addEventListeners() {
 		bindCustomizerChanges( this.handleOverlayOptionsUpdate );
 
-		window.addEventListener( 'popstate', this.onChangeQueryString );
-		window.addEventListener( 'queryStringChange', this.onChangeQueryString );
+		window.addEventListener( 'popstate', this.handleBrowserHistoryNavigation );
 
 		// Add listeners for input and submit
 		document.querySelectorAll( this.props.themeOptions.searchInputSelector ).forEach( input => {
@@ -91,8 +90,7 @@ class SearchApp extends Component {
 	}
 
 	removeEventListeners() {
-		window.removeEventListener( 'popstate', this.onChangeQueryString );
-		window.removeEventListener( 'queryStringChange', this.onChangeQueryString );
+		window.removeEventListener( 'popstate', this.handleBrowserHistoryNavigation );
 
 		document.querySelectorAll( this.props.themeOptions.searchInputSelector ).forEach( input => {
 			input.form.removeEventListener( 'submit', this.handleSubmit );
@@ -128,6 +126,11 @@ class SearchApp extends Component {
 	hasActiveQuery() {
 		return this.props.searchQuery !== '' || hasFilter();
 	}
+
+	handleBrowserHistoryNavigation = () => {
+		// Treat history navigation as brand new query values; re-initialize.
+		this.props.initializeQueryValues();
+	};
 
 	handleSubmit = event => {
 		event.preventDefault();
