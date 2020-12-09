@@ -67,7 +67,7 @@ class SearchApp extends Component {
 	addEventListeners() {
 		bindCustomizerChanges( this.handleOverlayOptionsUpdate );
 
-		window.addEventListener( 'popstate', this.onPopstate );
+		window.addEventListener( 'popstate', this.onChangeQueryString );
 		window.addEventListener( 'queryStringChange', this.onChangeQueryString );
 
 		// Add listeners for input and submit
@@ -86,7 +86,7 @@ class SearchApp extends Component {
 	}
 
 	removeEventListeners() {
-		window.removeEventListener( 'popstate', this.onPopstate );
+		window.removeEventListener( 'popstate', this.onChangeQueryString );
 		window.removeEventListener( 'queryStringChange', this.onChangeQueryString );
 
 		document.querySelectorAll( this.props.themeOptions.searchInputSelector ).forEach( input => {
@@ -180,10 +180,6 @@ class SearchApp extends Component {
 		} );
 	};
 
-	onPopstate = () => {
-		this.onChangeQueryString();
-	};
-
 	onChangeQueryString = () => {
 		this.getResults();
 
@@ -213,7 +209,7 @@ class SearchApp extends Component {
 	} = {} ) => {
 		this.props.makeSearchRequest( {
 			// Skip aggregations when requesting for paged results
-			aggregations: !! pageHandle ? {} : this.props.aggregations,
+			aggregations: pageHandle ? {} : this.props.aggregations,
 			excludedPostTypes: this.props.options.excludedPostTypes,
 			filter,
 			pageHandle,
