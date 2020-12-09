@@ -1,21 +1,16 @@
 /* global expect */
 
 /**
- * External dependencies
- */
-import { h } from 'preact';
-import { render } from '@testing-library/preact';
-import '@testing-library/jest-dom/extend-expect';
-
-/**
  * Internal dependencies
  */
 import {
 	makeSearchRequest,
 	recordSuccessfulSearchRequest,
 	recordFailedSearchRequest,
+	setSearchQuery,
 } from '../actions';
 import { hasError, isLoading, response } from '../reducer';
+import { searchQuery } from '../reducer/query-string';
 
 describe( 'hasError Reducer', () => {
 	test( 'defaults to false', () => {
@@ -93,5 +88,16 @@ describe( 'response Reducer', () => {
 				{ id: 1, result_type: 'post' },
 			],
 		} );
+	} );
+} );
+
+describe( 'searchQuery Reducer', () => {
+	test( 'defaults to an empty string', () => {
+		const state = searchQuery( undefined, {} );
+		expect( state ).toBe( '' );
+	} );
+	test( 'is updated by a set search query action', () => {
+		const state = searchQuery( undefined, setSearchQuery( 'Some new query' ) );
+		expect( state ).toBe( 'Some new query' );
 	} );
 } );

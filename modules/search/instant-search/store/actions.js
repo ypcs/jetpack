@@ -42,3 +42,30 @@ export function recordFailedSearchRequest( error ) {
 		error,
 	};
 }
+
+/**
+ * Returns an action object used to initialize query value related reducers.
+ *
+ * @param {string} query - Inputted user query.
+ *
+ * @returns {object} Action object.
+ */
+export function initializeQueryValues() {
+	return {
+		type: 'INITIALIZE_QUERY_VALUES',
+	};
+}
+
+/**
+ * Returns an action object used to make a search result request.
+ *
+ * @param {string} query - Inputted user query.
+ *
+ * @returns {object} Action object.
+ */
+export function setSearchQuery( query ) {
+	return {
+		type: 'SET_SEARCH_QUERY',
+		query,
+	};
+}

@@ -13,3 +13,7 @@ export function hasNextPage( state ) {
 export function isLoading( state ) {
 	return state.isLoading;
 }
+
+export function getSearchQuery( state ) {
+	return state.searchQuery;
+}

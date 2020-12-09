@@ -2,7 +2,12 @@
  * Internal dependencies
  */
 import { search } from '../../instant-search/lib/api';
-import { recordFailedSearchRequest, recordSuccessfulSearchRequest } from './actions';
+import { getQuery, setQuery } from '../../instant-search/lib/query-string';
+import {
+	recordFailedSearchRequest,
+	recordSuccessfulSearchRequest,
+	setSearchQuery,
+} from './actions';
 
 /**
  * Effect handler which will fetch search results from the API.
@@ -27,6 +32,29 @@ function makeSearchAPIRequest( action, store ) {
 		} );
 }
 
+function initializeQueryValues( action, store ) {
+	const queryObject = getQuery();
+	store.dispatch( setSearchQuery( queryObject.s ) );
+}
+
+/**
+ * Effect handler which will update the location bar's search query string
+ *
+ * @param {object} action - Action which had initiated the effect handler.
+ * @param {object} store -  Store instance.
+ */
+function updateSearchQueryString( action ) {
+	const queryObject = getQuery();
+	if ( action.query === '' ) {
+		delete queryObject.s;
+	} else {
+		queryObject.s = action.query;
+	}
+	setQuery( queryObject );
+}
+
 export default {
+	INITIALIZE_QUERY_VALUES: initializeQueryValues,
 	MAKE_SEARCH_REQUEST: makeSearchAPIRequest,
+	SET_SEARCH_QUERY: updateSearchQueryString,
 };
