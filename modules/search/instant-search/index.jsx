@@ -14,7 +14,7 @@ import { Provider } from 'react-redux';
  * Internal dependencies
  */
 import SearchApp from './components/search-app';
-import { getSearchQuery, determineDefaultSort } from './lib/query-string';
+import { determineDefaultSort } from './lib/query-string';
 import { getThemeOptions } from './lib/dom';
 import { SERVER_OBJECT_NAME } from './lib/constants';
 import { initializeTracks, identifySite, resetTrackingCookies } from './lib/tracks';
@@ -36,7 +36,6 @@ const injectSearchApp = () => {
 				// NOTE: initialShowResults is only used in the customizer. See lib/customize.js.
 				initialShowResults={ window[ SERVER_OBJECT_NAME ].showResults }
 				initialSort={ determineDefaultSort( window[ SERVER_OBJECT_NAME ].defaultSort ) }
-				isSearchPage={ getSearchQuery() !== '' }
 				options={ window[ SERVER_OBJECT_NAME ] }
 				themeOptions={ getThemeOptions( window[ SERVER_OBJECT_NAME ] ) }
 			/>

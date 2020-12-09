@@ -36,22 +36,6 @@ function pushQueryString( queryString, shouldEmitEvent = true ) {
 	}
 }
 
-export function getSearchQuery() {
-	const query = getQuery();
-	// Cast query.s as string since it can be a number
-	return 's' in query ? String( query.s ) : '';
-}
-
-export function setSearchQuery( searchValue ) {
-	const query = getQuery();
-	if ( searchValue === '' ) {
-		delete query.s;
-	} else {
-		query.s = searchValue;
-	}
-	pushQueryString( encode( query ) );
-}
-
 export function determineDefaultSort( initialSort ) {
 	const sortFromQuery = getSortQuery();
 	if ( sortFromQuery ) {
