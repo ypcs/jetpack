@@ -1,9 +1,4 @@
 /**
- * External dependencies
- */
-import { combineReducers } from 'redux';
-
-/**
  * Reducer for recording if the previous search request yielded an error.
  *
  * @param {object} state - Current state.
@@ -69,5 +64,3 @@ export function response( state = {}, action ) {
 
 	return state;
 }
-
-export default combineReducers( { hasError, isLoading, response } );
