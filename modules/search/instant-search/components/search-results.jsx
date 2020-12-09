@@ -60,7 +60,7 @@ class SearchResults extends Component {
 	}
 
 	renderPrimarySection() {
-		const { highlightColor, query } = this.props;
+		const { highlightColor, searchQuery } = this.props;
 		const { results = [], total = 0, corrected_query = false } = this.props.response;
 		const textColor = useMemo( () => getConstrastingColor( highlightColor ), [ highlightColor ] );
 		const hasCorrectedQuery = corrected_query !== false;
@@ -86,9 +86,11 @@ class SearchResults extends Component {
 					isVisible={ this.props.isVisible }
 					locale={ this.props.locale }
 					postTypes={ this.props.postTypes }
+					onChangeSearch={ this.props.onChangeSearch }
 					onChangeSort={ this.props.onChangeSort }
 					overlayTrigger={ this.props.overlayTrigger }
 					response={ this.props.response }
+					searchQuery={ this.props.searchQuery }
 					sort={ this.props.sort }
 					widgets={ this.props.widgets }
 					widgetsOutsideOverlay={ this.props.widgetsOutsideOverlay }
@@ -100,7 +102,7 @@ class SearchResults extends Component {
 
 				{ hasResults && hasCorrectedQuery && (
 					<p className="jetpack-instant-search__search-results-unused-query">
-						{ sprintf( __( 'No results for "%s"', 'jetpack' ), query ) }
+						{ sprintf( __( 'No results for "%s"', 'jetpack' ), searchQuery ) }
 					</p>
 				) }
 				{ this.props.hasError && (

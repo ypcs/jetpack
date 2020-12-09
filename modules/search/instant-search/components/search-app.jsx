@@ -19,16 +19,14 @@ import SearchResults from './search-results';
 import {
 	getFilterQuery,
 	getResultFormatQuery,
-	getSearchQuery,
 	getSortQuery,
 	hasFilter,
-	setSearchQuery,
 	setSortQuery,
 	setFilterQuery,
 	restorePreviousHref,
 } from '../lib/query-string';
-import { makeSearchRequest } from '../store/actions';
-import { getResponse, hasError, hasNextPage, isLoading } from '../store/selectors';
+import { initializeQueryValues, makeSearchRequest, setSearchQuery } from '../store/actions';
+import { getResponse, getSearchQuery, hasError, hasNextPage, isLoading } from '../store/selectors';
 import { bindCustomizerChanges } from '../lib/customize';
 import './search-app.scss';
 
@@ -45,6 +43,7 @@ class SearchApp extends Component {
 			showResults: this.props.initialShowResults,
 		};
 		this.getResults = debounce( this.getResults, 200 );
+		this.props.initializeQueryValues();
 	}
 
 	componentDidMount() {
@@ -56,6 +55,12 @@ class SearchApp extends Component {
 
 		if ( this.hasActiveQuery() ) {
 			this.showResults();
+		}
+	}
+
+	componentDidUpdate( prevProps ) {
+		if ( prevProps.searchQuery !== this.props.searchQuery ) {
+			this.onChangeQueryString();
 		}
 	}
 
@@ -121,7 +126,7 @@ class SearchApp extends Component {
 	getSort = () => getSortQuery( this.props.initialSort );
 
 	hasActiveQuery() {
-		return getSearchQuery() !== '' || hasFilter();
+		return this.props.searchQuery !== '' || hasFilter();
 	}
 
 	handleSubmit = event => {
@@ -139,7 +144,7 @@ class SearchApp extends Component {
 			this.showResults();
 		}
 
-		setSearchQuery( event.target.value );
+		this.props.setSearchQuery( event.target.value );
 	}, 200 );
 
 	handleFilterInputClick = event => {
@@ -188,7 +193,7 @@ class SearchApp extends Component {
 		}
 
 		document.querySelectorAll( this.props.themeOptions.searchInputSelector ).forEach( input => {
-			input.value = getSearchQuery();
+			input.value = this.props.searchQuery;
 		} );
 
 		// NOTE: This is necessary to ensure that the search query has been propagated to SearchBox
@@ -202,7 +207,7 @@ class SearchApp extends Component {
 	};
 
 	getResults = ( {
-		query = getSearchQuery(),
+		query = this.props.searchQuery,
 		filter = getFilterQuery(),
 		sort = this.getSort(),
 		pageHandle,
@@ -245,13 +250,14 @@ class SearchApp extends Component {
 					isPrivateSite={ this.props.options.isPrivateSite }
 					isVisible={ this.state.showResults }
 					locale={ this.props.options.locale }
+					onChangeSearch={ this.props.setSearchQuery }
 					onChangeSort={ this.onChangeSort }
 					onLoadNextPage={ this.loadNextPage }
 					overlayTrigger={ this.state.overlayOptions.overlayTrigger }
 					postTypes={ this.props.options.postTypes }
-					query={ getSearchQuery() }
 					response={ this.props.response }
 					resultFormat={ resultFormatQuery || this.state.overlayOptions.resultFormat }
+					searchQuery={ this.props.searchQuery }
 					showPoweredBy={ this.state.overlayOptions.showPoweredBy }
 					sort={ this.getSort() }
 					widgets={ this.props.options.widgets }
@@ -265,10 +271,11 @@ class SearchApp extends Component {
 
 export default connect(
 	state => ( {
-		isLoading: isLoading( state ),
 		hasError: hasError( state ),
 		hasNextPage: hasNextPage( state ),
+		isLoading: isLoading( state ),
 		response: getResponse( state ),
+		searchQuery: getSearchQuery( state ),
 	} ),
-	{ makeSearchRequest }
+	{ initializeQueryValues, makeSearchRequest, setSearchQuery }
 )( SearchApp );

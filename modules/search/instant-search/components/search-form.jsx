@@ -12,12 +12,7 @@ import JetpackColophon from './jetpack-colophon';
 import SearchBox from './search-box';
 import SearchFilters from './search-filters';
 
-import {
-	getFilterQuery,
-	getSearchQuery,
-	hasPreselectedFilters,
-	setSearchQuery,
-} from '../lib/query-string';
+import { getFilterQuery, hasPreselectedFilters } from '../lib/query-string';
 import PreselectedSearchFilters from './preselected-search-filters';
 import './search-form.scss';
 
@@ -28,7 +23,7 @@ class SearchForm extends Component {
 		showFilters: !! this.props.widget,
 	};
 
-	onChangeQuery = event => setSearchQuery( event.currentTarget.value );
+	onChangeSearch = event => this.props.onChangeSearch( event.currentTarget.value );
 	onChangeSort = sort => {
 		this.props.onChangeSort( sort );
 		this.hideFilters();
@@ -62,11 +57,11 @@ class SearchForm extends Component {
 						enableFilters={ this.hasSelectableFilters() || this.hasPreselectedFilters() }
 						enableSort={ this.props.enableSort }
 						isVisible={ this.props.isVisible }
-						onChangeQuery={ this.onChangeQuery }
+						onChangeSearch={ this.onChangeSearch }
 						onChangeSort={ this.onChangeSort }
-						query={ getSearchQuery() }
 						shouldRestoreFocus
 						showFilters={ this.state.showFilters }
+						searchQuery={ this.props.searchQuery }
 						sort={ this.props.sort }
 						toggleFilters={ this.toggleFilters }
 					/>
