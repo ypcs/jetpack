@@ -10,8 +10,7 @@ import {
 	setSearchQuery,
 	setSort,
 } from '../actions';
-import { hasError, isLoading, response } from '../reducer';
-import { searchQuery } from '../reducer/query-string';
+import { hasError, isLoading, response, searchQuery, sort } from '../reducer';
 
 describe( 'hasError Reducer', () => {
 	test( 'defaults to false', () => {
@@ -105,11 +104,11 @@ describe( 'searchQuery Reducer', () => {
 
 describe( 'searchQuery Reducer', () => {
 	test( 'defaults to "relevance"', () => {
-		const state = searchQuery( undefined, {} );
+		const state = sort( undefined, {} );
 		expect( state ).toBe( 'relevance' );
 	} );
 	test( 'is updated by a set search query action', () => {
-		const state = searchQuery( undefined, setSort( 'newest' ) );
+		const state = sort( undefined, setSort( 'newest' ) );
 		expect( state ).toBe( 'newest' );
 	} );
 } );
