@@ -17,3 +17,7 @@ export function isLoading( state ) {
 export function getSearchQuery( state ) {
 	return state.searchQuery;
 }
+
+export function getSort( state ) {
+	return state.sort;
+}

@@ -8,6 +8,7 @@ import {
 	recordSuccessfulSearchRequest,
 	recordFailedSearchRequest,
 	setSearchQuery,
+	setSort,
 } from '../actions';
 import { hasError, isLoading, response } from '../reducer';
 import { searchQuery } from '../reducer/query-string';
@@ -99,5 +100,16 @@ describe( 'searchQuery Reducer', () => {
 	test( 'is updated by a set search query action', () => {
 		const state = searchQuery( undefined, setSearchQuery( 'Some new query' ) );
 		expect( state ).toBe( 'Some new query' );
+	} );
+} );
+
+describe( 'searchQuery Reducer', () => {
+	test( 'defaults to "relevance"', () => {
+		const state = searchQuery( undefined, {} );
+		expect( state ).toBe( 'relevance' );
+	} );
+	test( 'is updated by a set search query action', () => {
+		const state = searchQuery( undefined, setSort( 'newest' ) );
+		expect( state ).toBe( 'newest' );
 	} );
 } );

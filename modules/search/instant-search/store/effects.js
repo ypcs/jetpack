@@ -1,12 +1,14 @@
 /**
  * Internal dependencies
  */
-import { search } from '../../instant-search/lib/api';
-import { getQuery, setQuery } from '../../instant-search/lib/query-string';
+import { search } from '../lib/api';
+import { SORT_DIRECTION_ASC, VALID_SORT_KEYS } from '../lib/constants';
+import { getQuery, setQuery } from '../lib/query-string';
 import {
 	recordFailedSearchRequest,
 	recordSuccessfulSearchRequest,
 	setSearchQuery,
+	setSort,
 } from './actions';
 
 /**
@@ -34,14 +36,36 @@ function makeSearchAPIRequest( action, store ) {
 
 function initializeQueryValues( action, store ) {
 	const queryObject = getQuery();
+
+	// Initialize search query value for the reducer.
 	store.dispatch( setSearchQuery( queryObject.s, false ) );
+
+	// Initialize sort value for the reducer.
+	let sort = 'revelance';
+	if ( VALID_SORT_KEYS.includes( queryObject.sort ) ) {
+		// Set sort value from `sort` query value.
+		sort = queryObject.sort;
+	} else if ( 'date' === queryObject.orderby ) {
+		// Set sort value from legacy `orderby` query value.
+		sort =
+			typeof queryObject.order === 'string' &&
+			queryObject.order.toUpperCase() === SORT_DIRECTION_ASC
+				? 'oldest'
+				: 'newest';
+	} else if ( 'relevance' === queryObject.orderby ) {
+		// Set sort value from legacy `orderby` query value.
+		sort = 'relevance';
+	} else if ( VALID_SORT_KEYS.includes( action.defaultSort ) ) {
+		// Set sort value from customizer configured default sort value.
+		sort = action.defaultSort;
+	}
+	store.dispatch( setSort( sort, false ) );
 }
 
 /**
  * Effect handler which will update the location bar's search query string
  *
  * @param {object} action - Action which had initiated the effect handler.
- * @param {object} store -  Store instance.
  */
 function updateSearchQueryString( action ) {
 	if ( action.propagateToWindow === false ) {
@@ -57,8 +81,34 @@ function updateSearchQueryString( action ) {
 	setQuery( queryObject );
 }
 
+/**
+ * Effect handler which will update the location bar's sort query string
+ *
+ * @param {object} action - Action which had initiated the effect handler.
+ */
+function updateSortQueryString( action ) {
+	if ( action.propagateToWindow === false ) {
+		return;
+	}
+	if ( ! VALID_SORT_KEYS.includes( action.sort ) ) {
+		return;
+	}
+
+	const queryObject = getQuery();
+
+	// Assumes that action.sort is a valid sort.
+	queryObject.sort = action.sort;
+
+	// Removes legacy sort query values, just in case.
+	delete queryObject.order;
+	delete queryObject.orderby;
+
+	setQuery( queryObject );
+}
+
 export default {
 	INITIALIZE_QUERY_VALUES: initializeQueryValues,
 	MAKE_SEARCH_REQUEST: makeSearchAPIRequest,
 	SET_SEARCH_QUERY: updateSearchQueryString,
+	SET_SORT: updateSortQueryString,
 };

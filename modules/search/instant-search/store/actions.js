@@ -50,9 +50,10 @@ export function recordFailedSearchRequest( error ) {
  *
  * @returns {object} Action object.
  */
-export function initializeQueryValues() {
+export function initializeQueryValues( { defaultSort } ) {
 	return {
 		type: 'INITIALIZE_QUERY_VALUES',
+		defaultSort,
 	};
 }
 
@@ -60,6 +61,7 @@ export function initializeQueryValues() {
  * Returns an action object used to make a search result request.
  *
  * @param {string} query - Inputted user query.
+ * @param {boolean} propagateToWindow - If true, will tell the effects handler to set the search query in the location bar.
  *
  * @returns {object} Action object.
  */
@@ -67,6 +69,22 @@ export function setSearchQuery( query, propagateToWindow = true ) {
 	return {
 		type: 'SET_SEARCH_QUERY',
 		query,
+		propagateToWindow,
+	};
+}
+
+/**
+ * Returns an action object used to make a search result request.
+ *
+ * @param {string} sort - Sort value.
+ * @param {boolean} propagateToWindow - If true, will tell the effects handler to set the search query in the location bar.
+ *
+ * @returns {object} Action object.
+ */
+export function setSort( sort, propagateToWindow = true ) {
+	return {
+		type: 'SET_SORT',
+		sort,
 		propagateToWindow,
 	};
 }
