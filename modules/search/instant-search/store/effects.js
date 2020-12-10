@@ -95,8 +95,6 @@ function updateSortQueryString( action ) {
 	}
 
 	const queryObject = getQuery();
-
-	// Assumes that action.sort is a valid sort.
 	queryObject.sort = action.sort;
 
 	// Removes legacy sort query values, just in case.
