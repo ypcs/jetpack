@@ -7,12 +7,7 @@ import { encode } from 'qss';
 /**
  * Internal dependencies
  */
-import {
-	SERVER_OBJECT_NAME,
-	SORT_DIRECTION_ASC,
-	VALID_RESULT_FORMAT_KEYS,
-	VALID_SORT_KEYS,
-} from './constants';
+import { SERVER_OBJECT_NAME, VALID_RESULT_FORMAT_KEYS } from './constants';
 import { getFilterKeys, getUnselectableFilterKeys, mapFilterToFilterKey } from './filters';
 import { decode } from '../external/query-string-decode';
 
@@ -34,60 +29,6 @@ function pushQueryString( queryString, shouldEmitEvent = true ) {
 		window.history.pushState( null, null, url.toString() );
 		shouldEmitEvent && window.dispatchEvent( new Event( 'queryStringChange' ) );
 	}
-}
-
-export function determineDefaultSort( initialSort ) {
-	const sortFromQuery = getSortQuery();
-	if ( sortFromQuery ) {
-		return sortFromQuery;
-	}
-
-	const sortFromLegacyValues = getSortFromOrderBy();
-	if ( sortFromLegacyValues ) {
-		return sortFromLegacyValues;
-	}
-
-	if ( VALID_SORT_KEYS.includes( initialSort ) ) {
-		return initialSort;
-	}
-
-	return 'relevance';
-}
-
-// This maps legacy order/orderby qs values into sort qs values.
-function getSortFromOrderBy( query = getQuery() ) {
-	const { order, orderby } = query;
-
-	if ( 'date' === orderby ) {
-		return typeof order === 'string' && order.toUpperCase() === SORT_DIRECTION_ASC
-			? 'oldest'
-			: 'newest';
-	} else if ( 'relevance' === orderby ) {
-		return 'relevance';
-	}
-	return null;
-}
-
-export function getSortQuery( initialSort = null ) {
-	const query = getQuery();
-	if ( VALID_SORT_KEYS.includes( query.sort ) ) {
-		return query.sort;
-	} else if ( VALID_SORT_KEYS.includes( initialSort ) ) {
-		return initialSort;
-	}
-	return null;
-}
-
-export function setSortQuery( sort ) {
-	if ( ! VALID_SORT_KEYS.includes( sort ) ) {
-		return false;
-	}
-
-	const query = getQuery();
-	query.sort = sort;
-	delete query.order;
-	delete query.orderby;
-	pushQueryString( encode( query ) );
 }
 
 function getFilterQueryByKey( filterKey ) {

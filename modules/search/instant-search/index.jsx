@@ -14,7 +14,6 @@ import { Provider } from 'react-redux';
  * Internal dependencies
  */
 import SearchApp from './components/search-app';
-import { determineDefaultSort } from './lib/query-string';
 import { getThemeOptions } from './lib/dom';
 import { SERVER_OBJECT_NAME } from './lib/constants';
 import { initializeTracks, identifySite, resetTrackingCookies } from './lib/tracks';
@@ -30,12 +29,12 @@ const injectSearchApp = () => {
 					...window[ SERVER_OBJECT_NAME ].widgets,
 					...window[ SERVER_OBJECT_NAME ].widgetsOutsideOverlay,
 				] ) }
+				defaultSort={ window[ SERVER_OBJECT_NAME ].defaultSort }
 				hasOverlayWidgets={ !! window[ SERVER_OBJECT_NAME ].hasOverlayWidgets }
 				initialHref={ window.location.href }
 				initialOverlayOptions={ window[ SERVER_OBJECT_NAME ].overlayOptions }
 				// NOTE: initialShowResults is only used in the customizer. See lib/customize.js.
 				initialShowResults={ window[ SERVER_OBJECT_NAME ].showResults }
-				initialSort={ determineDefaultSort( window[ SERVER_OBJECT_NAME ].defaultSort ) }
 				options={ window[ SERVER_OBJECT_NAME ] }
 				themeOptions={ getThemeOptions( window[ SERVER_OBJECT_NAME ] ) }
 			/>

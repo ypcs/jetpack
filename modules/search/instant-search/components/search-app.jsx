@@ -19,14 +19,24 @@ import SearchResults from './search-results';
 import {
 	getFilterQuery,
 	getResultFormatQuery,
-	getSortQuery,
 	hasFilter,
-	setSortQuery,
 	setFilterQuery,
 	restorePreviousHref,
 } from '../lib/query-string';
-import { initializeQueryValues, makeSearchRequest, setSearchQuery } from '../store/actions';
-import { getResponse, getSearchQuery, hasError, hasNextPage, isLoading } from '../store/selectors';
+import {
+	initializeQueryValues,
+	makeSearchRequest,
+	setSearchQuery,
+	setSort,
+} from '../store/actions';
+import {
+	getResponse,
+	getSearchQuery,
+	getSort,
+	hasError,
+	hasNextPage,
+	isLoading,
+} from '../store/selectors';
 import { bindCustomizerChanges } from '../lib/customize';
 import './search-app.scss';
 
@@ -43,11 +53,13 @@ class SearchApp extends Component {
 			showResults: this.props.initialShowResults,
 		};
 		this.getResults = debounce( this.getResults, 200 );
-		this.props.initializeQueryValues();
+		this.props.initializeQueryValues( {
+			defaultSort: this.props.defaultSort,
+		} );
 	}
 
 	componentDidMount() {
-		this.getResults( { sort: this.props.initialSort } );
+		this.getResults();
 		this.getResults.flush();
 
 		this.addEventListeners();
@@ -59,7 +71,7 @@ class SearchApp extends Component {
 	}
 
 	componentDidUpdate( prevProps ) {
-		if ( prevProps.searchQuery !== this.props.searchQuery ) {
+		if ( prevProps.searchQuery !== this.props.searchQuery || prevProps.sort !== this.props.sort ) {
 			this.onChangeQueryString();
 		}
 	}
@@ -121,15 +133,15 @@ class SearchApp extends Component {
 		document.body.style.overflowY = null;
 	}
 
-	getSort = () => getSortQuery( this.props.initialSort );
-
 	hasActiveQuery() {
 		return this.props.searchQuery !== '' || hasFilter();
 	}
 
 	handleBrowserHistoryNavigation = () => {
 		// Treat history navigation as brand new query values; re-initialize.
-		this.props.initializeQueryValues();
+		this.props.initializeQueryValues( {
+			defaultSort: this.props.defaultSort,
+		} );
 	};
 
 	handleSubmit = event => {
@@ -203,27 +215,20 @@ class SearchApp extends Component {
 		this.forceUpdate();
 	};
 
-	onChangeSort = sort => setSortQuery( sort );
-
 	loadNextPage = () => {
 		this.props.hasNextPage && this.getResults( { pageHandle: this.props.response.page_handle } );
 	};
 
-	getResults = ( {
-		query = this.props.searchQuery,
-		filter = getFilterQuery(),
-		sort = this.getSort(),
-		pageHandle,
-	} = {} ) => {
+	getResults = ( { filter = getFilterQuery(), pageHandle } = {} ) => {
 		this.props.makeSearchRequest( {
 			// Skip aggregations when requesting for paged results
 			aggregations: pageHandle ? {} : this.props.aggregations,
 			excludedPostTypes: this.props.options.excludedPostTypes,
 			filter,
 			pageHandle,
-			query,
+			query: this.props.searchQuery,
 			siteId: this.props.options.siteId,
-			sort,
+			sort: this.props.sort,
 			postsPerPage: this.props.options.postsPerPage,
 			adminQueryFilter: this.props.options.adminQueryFilter,
 		} );
@@ -254,7 +259,7 @@ class SearchApp extends Component {
 					isVisible={ this.state.showResults }
 					locale={ this.props.options.locale }
 					onChangeSearch={ this.props.setSearchQuery }
-					onChangeSort={ this.onChangeSort }
+					onChangeSort={ this.props.setSort }
 					onLoadNextPage={ this.loadNextPage }
 					overlayTrigger={ this.state.overlayOptions.overlayTrigger }
 					postTypes={ this.props.options.postTypes }
@@ -262,7 +267,7 @@ class SearchApp extends Component {
 					resultFormat={ resultFormatQuery || this.state.overlayOptions.resultFormat }
 					searchQuery={ this.props.searchQuery }
 					showPoweredBy={ this.state.overlayOptions.showPoweredBy }
-					sort={ this.getSort() }
+					sort={ this.props.sort }
 					widgets={ this.props.options.widgets }
 					widgetsOutsideOverlay={ this.props.options.widgetsOutsideOverlay }
 				/>
@@ -279,6 +284,7 @@ export default connect(
 		isLoading: isLoading( state ),
 		response: getResponse( state ),
 		searchQuery: getSearchQuery( state ),
+		sort: getSort( state ),
 	} ),
-	{ initializeQueryValues, makeSearchRequest, setSearchQuery }
+	{ initializeQueryValues, makeSearchRequest, setSearchQuery, setSort }
 )( SearchApp );
