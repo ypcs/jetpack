@@ -8,7 +8,7 @@ import { encode } from 'qss';
  * Internal dependencies
  */
 import { SERVER_OBJECT_NAME, VALID_RESULT_FORMAT_KEYS } from './constants';
-import { getFilterKeys, getUnselectableFilterKeys, mapFilterToFilterKey } from './filters';
+import { getFilterKeys } from './filters';
 import { decode } from '../external/query-string-decode';
 
 export function getQuery() {
@@ -29,65 +29,6 @@ function pushQueryString( queryString, shouldEmitEvent = true ) {
 		window.history.pushState( null, null, url.toString() );
 		shouldEmitEvent && window.dispatchEvent( new Event( 'queryStringChange' ) );
 	}
-}
-
-function getFilterQueryByKey( filterKey ) {
-	const query = getQuery();
-	if ( ! ( filterKey in query ) || query[ filterKey ] === '' ) {
-		return [];
-	}
-	if ( typeof query[ filterKey ] === 'string' ) {
-		return [ query[ filterKey ] ];
-	}
-	return query[ filterKey ];
-}
-
-export function getFilterQuery( filterKey ) {
-	if ( filterKey ) {
-		return getFilterQueryByKey( filterKey );
-	}
-
-	return Object.assign(
-		{},
-		...getFilterKeys().map( key => ( {
-			[ key ]: getFilterQueryByKey( key ),
-		} ) )
-	);
-}
-
-// These filter keys have been activated/selected outside of the overlay sidebar
-export function getPreselectedFilterKeys( overlayWidgets ) {
-	return getUnselectableFilterKeys( overlayWidgets ).filter(
-		key => Array.isArray( getFilterQueryByKey( key ) ) && getFilterQueryByKey( key ).length > 0
-	);
-}
-
-export function getPreselectedFilters( widgetsInOverlay, widgetsOutsideOverlay ) {
-	const keys = getPreselectedFilterKeys( widgetsInOverlay );
-	return widgetsOutsideOverlay
-		.map( widget => widget.filters )
-		.reduce( ( prev, current ) => prev.concat( current ), [] )
-		.filter( filter => keys.includes( mapFilterToFilterKey( filter ) ) );
-}
-
-export function hasPreselectedFilters( widgetsInOverlay, widgetsOutsideOverlay ) {
-	return getPreselectedFilters( widgetsInOverlay, widgetsOutsideOverlay ).length > 0;
-}
-
-export function hasFilter() {
-	return getFilterKeys().some( key => getFilterQueryByKey( key ).length > 0 );
-}
-
-export function clearFiltersFromQuery() {
-	const query = getQuery();
-	getFilterKeys().forEach( key => delete query[ key ] );
-	pushQueryString( encode( query ) );
-}
-
-export function setFilterQuery( filterKey, filterValue ) {
-	const query = getQuery();
-	query[ filterKey ] = filterValue;
-	pushQueryString( encode( query ) );
 }
 
 export function getResultFormatQuery() {

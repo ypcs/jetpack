@@ -11,9 +11,6 @@ import { Component, h } from 'preact';
 import JetpackColophon from './jetpack-colophon';
 import SearchBox from './search-box';
 import SearchFilters from './search-filters';
-
-import { getFilterQuery, hasPreselectedFilters } from '../lib/query-string';
-import PreselectedSearchFilters from './preselected-search-filters';
 import './search-form.scss';
 
 const noop = event => event.preventDefault();
@@ -43,18 +40,22 @@ class SearchForm extends Component {
 		}
 	};
 
-	hasSelectableFilters = () =>
-		this.props.widgets.some( widget => Array( widget.filters ) && widget.filters.length > 0 );
-
-	hasPreselectedFilters = () =>
-		hasPreselectedFilters( this.props.widgets, this.props.widgetsOutsideOverlay );
+	// Used to show filters selected outside of the overlay visible.
+	getWidgets() {
+		let widgets = [ ...this.props.widgets.map( widget => ( { ...widget, isInOverlay: true } ) ) ];
+		if ( this.props.widgetsOutsideOverlay?.filters?.length > 0 ) {
+			widgets = [ { ...this.props.widgetsOutsideOverlay, isInOverlay: false }, ...widgets ];
+		}
+		return widgets;
+	}
 
 	render() {
+		const widgets = this.getWidgets();
 		return (
 			<form autocomplete="off" onSubmit={ noop } role="search" className={ this.props.className }>
 				<div className="jetpack-instant-search__search-form">
 					<SearchBox
-						enableFilters={ this.hasSelectableFilters() || this.hasPreselectedFilters() }
+						enableFilters={ widgets.length > 0 }
 						enableSort={ this.props.enableSort }
 						isVisible={ this.props.isVisible }
 						onChangeSearch={ this.onChangeSearch }
@@ -66,33 +67,24 @@ class SearchForm extends Component {
 						toggleFilters={ this.toggleFilters }
 					/>
 				</div>
-				{ ( this.hasSelectableFilters() || this.hasPreselectedFilters() ) &&
-					this.state.showFilters && (
-						<div className="jetpack-instant-search__search-form-filters">
-							<div className="jetpack-instant-search__search-form-filters-arrow" />
-							<PreselectedSearchFilters
+				{ widgets.length > 0 && this.state.showFilters && (
+					<div className="jetpack-instant-search__search-form-filters">
+						<div className="jetpack-instant-search__search-form-filters-arrow" />
+						{ this.props.widgets.map( ( widget, index ) => (
+							<SearchFilters
+								filters={ this.props.filters }
 								loading={ this.props.isLoading }
 								locale={ this.props.locale }
+								onChange={ this.hideFilters }
 								postTypes={ this.props.postTypes }
 								results={ this.props.response }
-								widgets={ this.props.widgets }
-								widgetsOutsideOverlay={ this.props.widgetsOutsideOverlay }
+								showClearFiltersButton={ index === 0 }
+								widget={ widget }
 							/>
-							{ this.props.widgets.map( ( widget, index ) => (
-								<SearchFilters
-									filters={ getFilterQuery() }
-									loading={ this.props.isLoading }
-									locale={ this.props.locale }
-									onChange={ this.hideFilters }
-									postTypes={ this.props.postTypes }
-									results={ this.props.response }
-									showClearFiltersButton={ ! this.hasPreselectedFilters() && index === 0 }
-									widget={ widget }
-								/>
-							) ) }
-							<JetpackColophon locale={ this.props.locale } />
-						</div>
-					) }
+						) ) }
+						<JetpackColophon locale={ this.props.locale } />
+					</div>
+				) }
 			</form>
 		);
 	}
