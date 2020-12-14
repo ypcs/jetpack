@@ -58,7 +58,7 @@ export function initializeQueryValues( { defaultSort } ) {
 }
 
 /**
- * Returns an action object used to make a search result request.
+ * Returns an action object used to set a search query value.
  *
  * @param {string} query - Inputted user query.
  * @param {boolean} propagateToWindow - If true, will tell the effects handler to set the search query in the location bar.
@@ -74,7 +74,7 @@ export function setSearchQuery( query, propagateToWindow = true ) {
 }
 
 /**
- * Returns an action object used to make a search result request.
+ * Returns an action object used to set a search sort value.
  *
  * @param {string} sort - Sort value.
  * @param {boolean} propagateToWindow - If true, will tell the effects handler to set the search query in the location bar.
@@ -86,5 +86,34 @@ export function setSort( sort, propagateToWindow = true ) {
 		type: 'SET_SORT',
 		sort,
 		propagateToWindow,
+	};
+}
+
+/**
+ * Returns an action object used to set a search filter.
+ *
+ * @param {string} name - Filter name.
+ * @param {string[]} value - Filter values.
+ * @param {boolean} propagateToWindow - If true, will tell the effects handler to set the search query in the location bar.
+ *
+ * @returns {object} Action object.
+ */
+export function setFilter( name, value, propagateToWindow = true ) {
+	return {
+		type: 'SET_FILTER',
+		name,
+		value,
+		propagateToWindow,
+	};
+}
+
+/**
+ * Returns an action object used to clear all filter values.
+ *
+ * @returns {object} Action object.
+ */
+export function clearFilters() {
+	return {
+		type: 'CLEAR_FILTERS',
 	};
 }

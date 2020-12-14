@@ -3,10 +3,12 @@
  */
 import { search } from '../lib/api';
 import { SORT_DIRECTION_ASC, VALID_SORT_KEYS } from '../lib/constants';
+import { getFilterKeys } from '../lib/filters';
 import { getQuery, setQuery } from '../lib/query-string';
 import {
 	recordFailedSearchRequest,
 	recordSuccessfulSearchRequest,
+	setFilter,
 	setSearchQuery,
 	setSort,
 } from './actions';
@@ -37,10 +39,14 @@ function makeSearchAPIRequest( action, store ) {
 function initializeQueryValues( action, store ) {
 	const queryObject = getQuery();
 
+	//
 	// Initialize search query value for the reducer.
+	//
 	store.dispatch( setSearchQuery( queryObject.s, false ) );
 
+	//
 	// Initialize sort value for the reducer.
+	//
 	let sort = 'revelance';
 	if ( VALID_SORT_KEYS.includes( queryObject.sort ) ) {
 		// Set sort value from `sort` query value.
@@ -60,6 +66,15 @@ function initializeQueryValues( action, store ) {
 		sort = action.defaultSort;
 	}
 	store.dispatch( setSort( sort, false ) );
+
+	//
+	// Initialize filter value for the reducer.
+	//
+	getFilterKeys()
+		.filter( filterKey => filterKey in queryObject )
+		.forEach( filterKey =>
+			store.dispatch( setFilter( filterKey, queryObject[ filterKey ], false ) )
+		);
 }
 
 /**

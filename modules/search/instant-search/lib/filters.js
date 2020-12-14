@@ -8,6 +8,8 @@ import difference from 'lodash/difference';
  */
 import { SERVER_OBJECT_NAME } from './constants';
 
+// NOTE: This list is missing custom taxonomy names.
+//       getFilterKeys must be used to get the conclusive list of valid filter keys.
 const FILTER_KEYS = Object.freeze( [
 	// Post types
 	'post_types',
@@ -24,13 +26,13 @@ const FILTER_KEYS = Object.freeze( [
 
 export function getFilterKeys() {
 	// Extract taxonomy names from server widget data
-	const taxonomies = window[ SERVER_OBJECT_NAME ].widgets
+	const taxonomies = window[ SERVER_OBJECT_NAME ]?.widgets
 		.map( w => w.filters )
 		.filter( filters => Array.isArray( filters ) )
 		.reduce( ( filtersA, filtersB ) => filtersA.concat( filtersB ), [] )
 		.filter( filter => filter.type === 'taxonomy' )
 		.map( filter => filter.taxonomy );
-	return [ ...FILTER_KEYS, ...taxonomies ];
+	return [ ...FILTER_KEYS, ...( Array.isArray( taxonomies ) ? taxonomies : [] ) ];
 }
 
 // These filter keys are selectable from sidebar filters

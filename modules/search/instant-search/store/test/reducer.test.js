@@ -1,16 +1,21 @@
+/**
+ * @jest-environment jsdom
+ */
 /* global expect */
 
 /**
  * Internal dependencies
  */
 import {
+	clearFilters,
 	makeSearchRequest,
 	recordSuccessfulSearchRequest,
 	recordFailedSearchRequest,
+	setFilter,
 	setSearchQuery,
 	setSort,
 } from '../actions';
-import { hasError, isLoading, response, searchQuery, sort } from '../reducer';
+import { filters, hasError, isLoading, response, searchQuery, sort } from '../reducer';
 
 describe( 'hasError Reducer', () => {
 	test( 'defaults to false', () => {
@@ -102,7 +107,7 @@ describe( 'searchQuery Reducer', () => {
 	} );
 } );
 
-describe( 'searchQuery Reducer', () => {
+describe( 'sort Reducer', () => {
 	test( 'defaults to "relevance"', () => {
 		const state = sort( undefined, {} );
 		expect( state ).toBe( 'relevance' );
@@ -110,5 +115,30 @@ describe( 'searchQuery Reducer', () => {
 	test( 'is updated by a set search query action', () => {
 		const state = sort( undefined, setSort( 'newest' ) );
 		expect( state ).toBe( 'newest' );
+	} );
+} );
+
+describe( 'filters Reducer', () => {
+	test( 'defaults to an empty object', () => {
+		const state = filters( undefined, {} );
+		expect( state ).toEqual( {} );
+	} );
+	test( 'is updated by a set filter action', () => {
+		const state = filters( undefined, setFilter( 'post_types', [ 'post' ] ) );
+		expect( state ).toEqual( {
+			post_types: [ 'post' ],
+		} );
+	} );
+	test( 'ignores set filter actions with invalid filter names', () => {
+		const state = filters( undefined, setFilter( 'apple', [ 'tart' ] ) );
+		expect( state ).toEqual( {} );
+	} );
+	test( 'ignores set filter actions with non-array values', () => {
+		const state = filters( undefined, setFilter( 'post_types', 'tart' ) );
+		expect( state ).toEqual( {} );
+	} );
+	test( 'is reset by a clear filters action', () => {
+		const state = filters( { post_types: [ 'post' ] }, clearFilters() );
+		expect( state ).toEqual( {} );
 	} );
 } );
