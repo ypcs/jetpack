@@ -38,7 +38,14 @@ export function hasFilters( state ) {
 // This selector combines multiple widgets outside overlay into a single widget consisting only of the `filters` key.
 // This is used to render a single SearchFilters component for all filters selected outside the search overlay.
 export function getWidgetOutsideOverlay( state ) {
-	const keys = getUnselectableFilterKeys();
+	// Both of these values should default to [] when empty; they should never be falsy.
+	if ( ! state.serverOptions.widgetsOutsideOverlay || ! state.serverOptions.widgets ) {
+		return {};
+	}
+	const keys = getUnselectableFilterKeys(
+		state.serverOptions.widgets,
+		state.serverOptions.widgetsOutsideOverlay
+	);
 	const selectedKeys = Object.keys( state.filters ).filter( key => keys.includes( key ) );
 	const filters = state.serverOptions.widgetsOutsideOverlay
 		.map( widget => widget.filters )

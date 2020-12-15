@@ -119,9 +119,38 @@ function updateSortQueryString( action ) {
 	setQuery( queryObject );
 }
 
+/**
+ * Effect handler which will update the location bar's filter query string
+ *
+ * @param {object} action - Action which had initiated the effect handler.
+ */
+function updateFilterQueryString( action ) {
+	if ( action.propagateToWindow === false ) {
+		return;
+	}
+	if ( ! getFilterKeys().includes( action.name ) ) {
+		return;
+	}
+
+	const queryObject = getQuery();
+	queryObject[ action.name ] = action.value;
+	setQuery( queryObject );
+}
+
+/**
+ * Effect handler which will clear filter queries from the location bar
+ */
+function clearFilterQueryString() {
+	const queryObject = getQuery();
+	getFilterKeys().forEach( key => delete queryObject[ key ] );
+	setQuery( queryObject );
+}
+
 export default {
+	CLEAR_FILTERS: clearFilterQueryString,
 	INITIALIZE_QUERY_VALUES: initializeQueryValues,
 	MAKE_SEARCH_REQUEST: makeSearchAPIRequest,
+	SET_FILTER: updateFilterQueryString,
 	SET_SEARCH_QUERY: updateSearchQueryString,
 	SET_SORT: updateSortQueryString,
 };

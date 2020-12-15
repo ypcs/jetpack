@@ -24,9 +24,12 @@ const FILTER_KEYS = Object.freeze( [
 	'year_post_modified_gmt',
 ] );
 
-export function getFilterKeys() {
+export function getFilterKeys(
+	widgets = window[ SERVER_OBJECT_NAME ]?.widgets,
+	widgetsOutsideOverlay = window[ SERVER_OBJECT_NAME ]?.widgetsOutsideOverlay
+) {
 	// Extract taxonomy names from server widget data
-	const taxonomies = window[ SERVER_OBJECT_NAME ]?.widgets
+	const taxonomies = [ ...( widgets ?? [] ), ...( widgetsOutsideOverlay ?? [] ) ]
 		.map( w => w.filters )
 		.filter( filters => Array.isArray( filters ) )
 		.reduce( ( filtersA, filtersB ) => filtersA.concat( filtersB ), [] )
@@ -36,16 +39,17 @@ export function getFilterKeys() {
 }
 
 // These filter keys are selectable from sidebar filters
-function getSelectableFilterKeys( overlayWidgets ) {
-	return overlayWidgets
-		.map( extractFilters )
-		.reduce( ( prev, current ) => prev.concat( current ), [] );
+function getSelectableFilterKeys( widgets ) {
+	return widgets.map( extractFilters ).reduce( ( prev, current ) => prev.concat( current ), [] );
 }
 
 // These filter keys are not selectable from sidebar filters
 // In other words, they were selected via filters outside the search sidebar
-export function getUnselectableFilterKeys( overlayWidgets ) {
-	return difference( getFilterKeys(), getSelectableFilterKeys( overlayWidgets ) );
+export function getUnselectableFilterKeys( widgets, widgetsOutsideOverlay ) {
+	return difference(
+		getFilterKeys( widgets, widgetsOutsideOverlay ),
+		getSelectableFilterKeys( widgets )
+	);
 }
 
 function extractFilters( widget ) {
