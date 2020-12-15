@@ -19,6 +19,7 @@ const SearchSidebar = props => {
 	return (
 		<div className="jetpack-instant-search__sidebar">
 			<SearchFilters
+				filters={ props.filters }
 				loading={ props.isLoading }
 				locale={ props.locale }
 				postTypes={ props.postTypes }
@@ -35,6 +36,7 @@ const SearchSidebar = props => {
 						className="jetpack-instant-search__portaled-wrapper"
 					>
 						<SearchFilters
+							filters={ props.filters }
 							loading={ props.isLoading }
 							locale={ props.locale }
 							postTypes={ props.postTypes }

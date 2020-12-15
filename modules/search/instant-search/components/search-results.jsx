@@ -83,7 +83,6 @@ class SearchResults extends Component {
 					className="jetpack-instant-search__search-results-search-form"
 					enableSort={ this.props.enableSort }
 					filters={ this.props.filters }
-					filtersOutsideOverlay={ this.props.filtersOutsideOverlay }
 					isLoading={ this.props.isLoading }
 					isVisible={ this.props.isVisible }
 					locale={ this.props.locale }
@@ -153,6 +152,7 @@ class SearchResults extends Component {
 	renderSecondarySection() {
 		return (
 			<SearchSidebar
+				filters={ this.props.filters }
 				isLoading={ this.props.isLoading }
 				locale={ this.props.locale }
 				postTypes={ this.props.postTypes }
