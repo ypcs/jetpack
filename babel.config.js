@@ -12,6 +12,10 @@ const config = {
 				[ require.resolve( '@automattic/calypso-build/babel/default' ), { modules: 'commonjs' } ],
 			],
 		},
+		{
+			test: './modules/search/',
+			presets: [ require.resolve( './modules/search/babel.config.js' ) ],
+		},
 	],
 	env: {
 		test: {
