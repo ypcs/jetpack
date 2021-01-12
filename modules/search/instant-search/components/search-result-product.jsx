@@ -11,6 +11,7 @@ import { __ } from '@wordpress/i18n';
  */
 import SearchResultComments from './search-result-comments';
 import PhotonImage from './photon-image';
+import ProductRatings from './product-ratings';
 
 /**
  * Style dependencies
@@ -67,6 +68,12 @@ class SearchResultProduct extends Component {
 					<div className="jetpack-instant-search__search-result-product-price">
 						{ fields[ 'wc.price' ].toFixed( 2 ) }
 					</div>
+				) }
+				{ fields[ 'meta._wc_average_rating.double' ] && (
+					<ProductRatings
+						count={ fields[ 'meta._wc_rating_count.long' ] }
+						rating={ fields[ 'meta._wc_average_rating.double' ] }
+					/>
 				) }
 				<div
 					className="jetpack-instant-search__search-result-product-content"
