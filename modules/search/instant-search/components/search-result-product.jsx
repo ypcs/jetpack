@@ -35,6 +35,23 @@ class SearchResultProduct extends Component {
 
 		return (
 			<li className="jetpack-instant-search__search-result-product">
+				<a
+					href={ `//${ fields[ 'permalink.url.raw' ] }` }
+					onClick={ this.props.onClick }
+					rel="noopener noreferrer"
+					target="_blank"
+				>
+					{ firstImage ? (
+						<PhotonImage
+							alt=""
+							className="jetpack-instant-search__search-result-product-img"
+							isPrivateSite={ this.props.isPrivateSite }
+							src={ `//${ firstImage }` }
+						/>
+					) : (
+						<div className="jetpack-instant-search__search-result-product-img"></div>
+					) }
+				</a>
 				<h3 className="jetpack-instant-search__result-product-title">
 					<a
 						href={ `//${ fields[ 'permalink.url.raw' ] }` }
@@ -45,20 +62,11 @@ class SearchResultProduct extends Component {
 						dangerouslySetInnerHTML={ { __html: title } }
 					/>
 				</h3>
-				{ firstImage && (
-					<a
-						href={ `//${ fields[ 'permalink.url.raw' ] }` }
-						onClick={ this.props.onClick }
-						rel="noopener noreferrer"
-						target="_blank"
-					>
-						<PhotonImage
-							alt=""
-							className="jetpack-instant-search__search-result-product-img"
-							isPrivateSite={ this.props.isPrivateSite }
-							src={ `//${ firstImage }` }
-						/>
-					</a>
+
+				{ fields[ 'wc.price' ] && (
+					<div className="jetpack-instant-search__search-result-product-price">
+						{ fields[ 'wc.price' ].toFixed( 2 ) }
+					</div>
 				) }
 				<div
 					className="jetpack-instant-search__search-result-product-content"
@@ -67,11 +75,6 @@ class SearchResultProduct extends Component {
 						__html: highlight.content.join( ' ... ' ),
 					} }
 				/>
-				{ fields[ 'wc.price' ] && (
-					<div className="jetpack-instant-search__search-result-product-price">
-						{ fields[ 'wc.price' ].toFixed( 2 ) }
-					</div>
-				) }
 
 				{ highlight.comments && <SearchResultComments comments={ highlight.comments } /> }
 			</li>
