@@ -25,12 +25,17 @@ import './product-ratings.scss';
 export default function ProductRatings( { rating = 0, count = 0 } ) {
 	return (
 		<div className="jetpack-instant-search__search-result-product-rating">
-			<span className="jetpack-instant-search__search-result-product-rating-stars">
+			<span aria-hidden className="jetpack-instant-search__search-result-product-rating-stars">
 				{ Array( 5 )
 					.fill( <Gridicon size={ 16 } icon="star-outline" /> )
 					.fill( <Gridicon size={ 16 } icon="star" />, 0, rating ) }
 			</span>{ ' ' }
-			<span className="jetpack-instant-search__search-result-product-rating-count">{ count }</span>
+			<span aria-hidden className="jetpack-instant-search__search-result-product-rating-count">
+				{ count }
+			</span>
+			<span className="screen-reader-text">
+				Average rating of { Number( rating ).toFixed( 2 ) } out of 5 from { count } ratings.
+			</span>
 		</div>
 	);
 }
