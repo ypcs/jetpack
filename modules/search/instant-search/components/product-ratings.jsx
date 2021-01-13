@@ -2,6 +2,7 @@
 /**
  * External dependencies
  */
+import { _n, sprintf } from '@wordpress/i18n';
 import { h } from 'preact';
 
 /**
@@ -34,7 +35,16 @@ export default function ProductRatings( { rating = 0, count = 0 } ) {
 				{ count }
 			</span>
 			<span className="screen-reader-text">
-				Average rating of { Number( rating ).toFixed( 2 ) } out of 5 from { count } ratings.
+				{ sprintf(
+					_n(
+						'Average rating of %s out of 5 from %s rating.',
+						'Average rating of %s out of 5 from %s ratings.',
+						count,
+						'jetpack'
+					),
+					Number( rating ).toFixed( 2 ),
+					count
+				) }
 			</span>
 		</div>
 	);
