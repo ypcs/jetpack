@@ -19,6 +19,22 @@ export default class MailchimpBlock extends PageActions {
 		return 'Mailchimp';
 	}
 
+	//region selectors
+
+	get setupFormBtnSel() {
+		return `${ this.blockSelector } a[href*='calypso-marketing-connections']`;
+	}
+
+	get recheckConnectionLnkSel() {
+		return `${ this.blockSelector } button.is-link`;
+	}
+
+	get joinBtnSel() {
+		return `${ this.blockSelector } div >> text="Join my email list"`;
+	}
+
+	//endregion
+
 	/**
 	 * Sets-up a mailchimp connection. Method expects to see a "Set up Mailchimp from" button in block editor.
 	 * - Starts by logging in to WPCOM account in page opened in new tab
@@ -29,11 +45,17 @@ export default class MailchimpBlock extends PageActions {
 	 *
 	 */
 	async connect( isLoggedIn = true ) {
-		const setupFormSelector = this.getSelector( "a[href*='calypso-marketing-connections']" );
-		const formSelector = await this.waitForElementToBeVisible( setupFormSelector );
+		logger.step( `Connecting Mailchimp` );
+
+		if ( this.isElementVisible( this.joinBtnSel ) ) {
+			logger.info( `Mailchimp seems to be already connected` );
+			return;
+		}
+
+		const formSelector = await this.waitForElementToBeVisible( this.setupFormBtnSel );
 		const hrefProperty = await formSelector.getProperty( 'href' );
 		const connectionsUrl = await hrefProperty.jsonValue();
-		const wpComTab = await this.clickAndWaitForNewPage( setupFormSelector );
+		const wpComTab = await this.clickAndWaitForNewPage( this.setupFormBtnSel );
 
 		if ( ! isLoggedIn ) {
 			await ( await LoginPage.init( wpComTab ) ).login( 'defaultUser' );
@@ -68,12 +90,7 @@ export default class MailchimpBlock extends PageActions {
 		await wpComConnectionsPage.selectMailchimpList();
 
 		await this.page.bringToFront();
-		const reCheckSelector = this.getSelector( 'button.is-link' );
-		await this.click( reCheckSelector );
-	}
-
-	getSelector( selector ) {
-		return `${ this.blockSelector } ${ selector }`;
+		await this.click( this.recheckConnectionLnkSel );
 	}
 
 	/**
