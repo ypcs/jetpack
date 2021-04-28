@@ -49,6 +49,10 @@ const config = {
 		pinterest: {
 			pinId: '689332286716774968',
 		},
+		eventbrite: {
+			eventUrl: 'https://www.eventbrite.co.nz/e',
+			eventId: '112691417062',
+		},
 	},
 };
 

@@ -48,7 +48,7 @@ describe( 'Free blocks', () => {
 	} );
 
 	it( 'Eventbrite block', async () => {
-		const eventId = '112691417062';
+		const eventId = config.get( 'blocks.eventbrite.eventId' );
 
 		await step( 'Can visit the block editor and add a Eventbrite block', async () => {
 			const blockId = await blockEditor.insertBlock(

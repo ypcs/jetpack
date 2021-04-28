@@ -1,4 +1,6 @@
 import PageActions from '../../page-actions';
+import config from 'config';
+import logger from '../../../logger';
 
 export default class EventbriteBlock extends PageActions {
 	constructor( blockId, page, eventId ) {
@@ -16,21 +18,31 @@ export default class EventbriteBlock extends PageActions {
 		return 'Eventbrite';
 	}
 
-	embedUrl() {
-		return `https://www.eventbrite.co.nz/e/${ this.eventId }`;
+	get embedUrl() {
+		return `${ config.get( 'blocks.eventbrite.eventUrl' ) }/${ this.eventId }`;
 	}
+
+	//region selectors
+
+	get inputSel() {
+		return '.components-placeholder__input';
+	}
+
+	get embedBtnSel() {
+		return "button[type='submit']";
+	}
+
+	get embeddedEventFrameSel() {
+		return '.wp-block-jetpack-eventbrite .components-sandbox';
+	}
+
+	//endregion
 
 	async addEmbed() {
-		const inputSelector = this.getSelector( '.components-placeholder__input' );
-		const descriptionSelector = this.getSelector( "button[type='submit']" );
-
-		await this.type( inputSelector, this.embedUrl() );
-		await this.click( descriptionSelector );
-		await this.waitForElementToBeVisible( '.wp-block-jetpack-eventbrite .components-sandbox' );
-	}
-
-	getSelector( selector ) {
-		return `${ this.blockSelector } ${ selector }`;
+		logger.step( `Embedding Eventbrite event [url: ${ this.embedUrl }]` );
+		await this.type( this.inputSel, this.embedUrl );
+		await this.click( this.embedBtnSel );
+		await this.waitForElementToBeVisible( this.embeddedEventFrameSel );
 	}
 
 	/**
