@@ -47,7 +47,7 @@ export default class MailchimpBlock extends PageActions {
 	async connect( isLoggedIn = true ) {
 		logger.step( `Connecting Mailchimp` );
 
-		if ( this.isElementVisible( this.joinBtnSel ) ) {
+		if ( await this.isElementVisible( this.joinBtnSel ) ) {
 			logger.info( `Mailchimp seems to be already connected` );
 			return;
 		}
@@ -91,6 +91,8 @@ export default class MailchimpBlock extends PageActions {
 
 		await this.page.bringToFront();
 		await this.click( this.recheckConnectionLnkSel );
+
+		await this.waitForElementToBeVisible( this.joinBtnSel );
 	}
 
 	/**
