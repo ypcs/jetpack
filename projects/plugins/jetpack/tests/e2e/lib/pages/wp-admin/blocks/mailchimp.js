@@ -7,7 +7,6 @@ import axios from 'axios';
 export default class MailchimpBlock extends PageActions {
 	constructor( blockId, page ) {
 		super( page, 'Mailchimp block' );
-		this.blockTitle = MailchimpBlock.title();
 		this.page = page;
 		this.blockSelector = '#block-' + blockId;
 	}
@@ -115,22 +114,5 @@ export default class MailchimpBlock extends PageActions {
 
 		logger.debug( `Mailchimp connection status: ${ connectionStatus }` );
 		return connectionStatus === 'connected';
-	}
-
-	/**
-	 * Checks whether block is rendered on frontend
-	 *
-	 * @param {page} page Playwright page instance
-	 */
-	static async isRendered( page ) {
-		const containerSelector = '.wp-block-jetpack-mailchimp';
-		const emailSelector = containerSelector + " input[type='email']";
-		const submitSelector = containerSelector + " button[type='submit']";
-		const consentSelector = containerSelector + ' #wp-block-jetpack-mailchimp_consent-text';
-
-		await page.waitForSelector( containerSelector );
-		await page.waitForSelector( emailSelector );
-		await page.waitForSelector( submitSelector );
-		await page.waitForSelector( consentSelector );
 	}
 }

@@ -47,6 +47,7 @@ const config = {
 	},
 	blocks: {
 		pinterest: {
+			pinUrl: 'https://www.pinterest.com/pin',
 			pinId: '689332286716774968',
 		},
 		eventbrite: {

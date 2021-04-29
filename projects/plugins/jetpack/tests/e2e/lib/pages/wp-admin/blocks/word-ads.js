@@ -3,8 +3,6 @@ import PageActions from '../../page-actions';
 export default class WordAdsBlock extends PageActions {
 	constructor( blockId, page ) {
 		super( page, 'Ad block' );
-		this.blockTitle = WordAdsBlock.title();
-		this.page = page;
 		this.blockSelector = '#block-' + blockId;
 	}
 
@@ -16,28 +14,28 @@ export default class WordAdsBlock extends PageActions {
 		return 'Ad';
 	}
 
+	// region selectors
+
+	get formatPickerBtnSel() {
+		return `.wp-block-jetpack-wordads__format-picker-icon`;
+	}
+
+	getFormatNumberSel( number ) {
+		return `.wp-block-jetpack-wordads__format-picker button:nth-child(${ number })`;
+	}
+
+	get adContainerSel() {
+		return `${ this.blockSelector } .jetpack-wordads__ad`;
+	}
+
+	// endregion
+
 	async switchFormat( buttonNumber ) {
-		await this.click( '.wp-block-jetpack-wordads__format-picker-icon' );
-		const formatButtonSelector = `.wp-block-jetpack-wordads__format-picker button:nth-child(${ buttonNumber })`;
-		return await this.click( formatButtonSelector );
+		await this.click( this.formatPickerBtnSel );
+		return await this.click( this.getFormatNumberSel( buttonNumber ) );
 	}
 
-	getSelector( selector ) {
-		return `${ this.blockSelector } ${ selector }`;
-	}
-
-	async focus() {
-		return await this.click( this.getSelector( '.wp-block-jetpack-wordads' ) );
-	}
-
-	/**
-	 * Checks whether block is rendered on frontend
-	 *
-	 * @param {page} page Playwright page instance
-	 */
-	static async isRendered( page ) {
-		const containerSelector = ".entry-content iframe[src*='wordads']";
-
-		await page.waitForSelector( containerSelector );
+	async selectAd() {
+		return await this.click( this.adContainerSel );
 	}
 }

@@ -1,10 +1,12 @@
 import BlockEditorPage from '../lib/pages/wp-admin/block-editor';
-import PostFrontendPage from '../lib/pages/postFrontend';
 import { syncJetpackPlanData } from '../lib/flows/jetpack-connect';
 import PinterestBlock from '../lib/pages/wp-admin/blocks/pinterest';
 import EventbriteBlock from '../lib/pages/wp-admin/blocks/eventbrite';
 import { step } from '../lib/env/test-setup';
 import config from 'config';
+import PinterestRenderedBlock from '../lib/pages/post/pinterest-rendered-block';
+import PostPage from '../lib/pages/post/post-page';
+import EventbriteRenderedBlock from '../lib/pages/post/eventbrite-rendered-block';
 
 /**
  *
@@ -46,8 +48,9 @@ describe( 'Free blocks', () => {
 		} );
 
 		await step( 'Can assert that Pinterest block is rendered', async () => {
-			const frontend = await PostFrontendPage.init( page );
-			expect( await frontend.isRenderedBlockPresent( PinterestBlock, { pinId } ) ).toBeTruthy();
+			await PostPage.init( page );
+			const renderedBlock = await PinterestRenderedBlock.init( page );
+			expect( await renderedBlock.isContentRendered( pinId ) ).toBeTruthy();
 		} );
 	} );
 
@@ -71,12 +74,9 @@ describe( 'Free blocks', () => {
 		} );
 
 		await step( 'Can assert that Eventbrite block is rendered', async () => {
-			const frontend = await PostFrontendPage.init( page );
-			expect(
-				await frontend.isRenderedBlockPresent( EventbriteBlock, {
-					eventId,
-				} )
-			).toBeTruthy();
+			await PostPage.init( page );
+			const renderedBlock = await EventbriteRenderedBlock.init( page );
+			expect( await renderedBlock.isContentRendered( eventId ) ).toBeTruthy();
 		} );
 	} );
 } );

@@ -1,6 +1,3 @@
-/**
- * Internal dependencies
- */
 import WpPage from '../wp-page';
 
 export default class DashboardPage extends WpPage {
@@ -9,13 +6,18 @@ export default class DashboardPage extends WpPage {
 		super( page, { expectedSelectors: [ '#dashboard-widgets-wrap' ], url } );
 	}
 
+	// region selectors
+
+	get jetpackConnectBtnSel() {
+		return ".jp-wpcom-connect__container a[href*='register']";
+	}
+	// endregion
+
 	async isConnectBannerVisible() {
-		const selector = ".jp-wpcom-connect__container a[href*='register']";
-		return await this.isElementVisible( selector );
+		return await this.isElementVisible( this.jetpackConnectBtnSel );
 	}
 
 	async connect() {
-		const selector = ".jp-wpcom-connect__container a[href*='register']";
-		return await this.click( selector );
+		return await this.click( this.jetpackConnectBtnSel );
 	}
 }

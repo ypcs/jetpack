@@ -1,10 +1,10 @@
 import PageActions from '../../page-actions';
+import config from 'config';
+import logger from '../../../logger';
 
 export default class PinterestBlock extends PageActions {
 	constructor( blockId, page, pinId ) {
 		super( page, 'Pinterest block' );
-		this.blockTitle = PinterestBlock.title();
-		this.page = page;
 		this.blockSelector = '#block-' + blockId;
 		this.pinId = pinId;
 	}
@@ -17,32 +17,30 @@ export default class PinterestBlock extends PageActions {
 		return 'Pinterest';
 	}
 
-	embedUrl() {
-		return `https://www.pinterest.com/pin/${ this.pinId }/`;
+	get embedUrl() {
+		return `${ config.get( 'blocks.pinterest.pinUrl' ) }/${ this.pinId }`;
 	}
+
+	//region selectors
+
+	get inputSel() {
+		return `${ this.blockSelector } .components-placeholder__input`;
+	}
+
+	get embedBtnSel() {
+		return `${ this.blockSelector } button[type='submit']`;
+	}
+
+	get embeddedPinFrameSel() {
+		return `${ this.blockSelector } .wp-block-jetpack-pinterest .components-sandbox`;
+	}
+
+	//endregion
 
 	async addEmbed() {
-		const inputSelector = this.getSelector( '.components-placeholder__input' );
-		const descriptionSelector = this.getSelector( "button[type='submit']" );
-
-		await this.type( inputSelector, this.embedUrl() );
-		await this.click( descriptionSelector );
-		await this.waitForElementToBeVisible( '.wp-block-jetpack-pinterest .components-sandbox' );
-	}
-
-	getSelector( selector ) {
-		return `${ this.blockSelector } ${ selector }`;
-	}
-
-	/**
-	 * Checks whether block is rendered on frontend
-	 *
-	 * @param {page} page Playwright page instance
-	 * @param {Object} args An object of any additional required instance values
-	 */
-	static async isRendered( page, args ) {
-		const containerSelector = `.entry-content span[data-pin-id='${ args.pinId }']`;
-
-		await page.waitForSelector( containerSelector );
+		logger.step( `Embedding Pinterest pin [url: ${ this.embedUrl }]` );
+		await this.type( this.inputSel, this.embedUrl );
+		await this.click( this.embedBtnSel );
+		await this.waitForElementToBeVisible( this.embeddedPinFrameSel );
 	}
 }

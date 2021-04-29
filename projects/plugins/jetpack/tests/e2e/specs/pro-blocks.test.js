@@ -1,11 +1,14 @@
 import BlockEditorPage from '../lib/pages/wp-admin/block-editor';
-import PostFrontendPage from '../lib/pages/postFrontend';
 import MailchimpBlock from '../lib/pages/wp-admin/blocks/mailchimp';
 import { syncJetpackPlanData } from '../lib/flows/jetpack-connect';
 import { activateModule, execMultipleWpCommands } from '../lib/utils-helper';
-import SimplePaymentBlock from '../lib/pages/wp-admin/blocks/simple-payments';
+import PayPalBlock from '../lib/pages/wp-admin/blocks/paypal';
 import WordAdsBlock from '../lib/pages/wp-admin/blocks/word-ads';
 import { step } from '../lib/env/test-setup';
+import WordAdsRenderedBlock from '../lib/pages/post/wordads-rendered-block';
+import MailchimpRenderedBlock from '../lib/pages/post/mailchimp-rendered-block';
+import PayPalRenderedBlock from '../lib/pages/post/paypal-rendered-block';
+import PostPage from '../lib/pages/post/post-page';
 
 /**
  *
@@ -51,8 +54,10 @@ describe( 'Paid blocks', () => {
 			await blockEditor.selectPostTitle();
 			await blockEditor.publishPost();
 			await blockEditor.viewPost();
-			const frontend = await PostFrontendPage.init( page );
-			expect( await frontend.isRenderedBlockPresent( MailchimpBlock ) ).toBeTruthy();
+
+			await PostPage.init( page );
+			const renderedBlock = await MailchimpRenderedBlock.init( page );
+			expect( await renderedBlock.isContentRendered() ).toBeTruthy();
 		} );
 	} );
 
@@ -60,16 +65,13 @@ describe( 'Paid blocks', () => {
 		let blockId;
 
 		await step( 'Can visit the block editor and add a Pay with PayPal block', async () => {
-			await blockEditor.waitForAvailableBlock( SimplePaymentBlock.name() );
+			await blockEditor.waitForAvailableBlock( PayPalBlock.name() );
 
-			blockId = await blockEditor.insertBlock(
-				SimplePaymentBlock.name(),
-				SimplePaymentBlock.title()
-			);
+			blockId = await blockEditor.insertBlock( PayPalBlock.name(), PayPalBlock.title() );
 		} );
 
 		await step( 'Can fill details of Pay with PayPal block', async () => {
-			const spBlock = new SimplePaymentBlock( blockId, page );
+			const spBlock = new PayPalBlock( blockId, page );
 			await spBlock.fillDetails();
 		} );
 
@@ -79,8 +81,10 @@ describe( 'Paid blocks', () => {
 				await blockEditor.selectPostTitle();
 				await blockEditor.publishPost();
 				await blockEditor.viewPost();
-				const frontend = await PostFrontendPage.init( page );
-				expect( await frontend.isRenderedBlockPresent( SimplePaymentBlock ) ).toBeTruthy();
+
+				await PostPage.init( page );
+				const renderedBlock = await PayPalRenderedBlock.init( page );
+				expect( await renderedBlock.isContentRendered() ).toBeTruthy();
 			}
 		);
 	} );
@@ -96,7 +100,7 @@ describe( 'Paid blocks', () => {
 
 		await step( 'Can switch to Wide Skyscraper ad format', async () => {
 			const adBlock = new WordAdsBlock( blockId, page );
-			await adBlock.focus();
+			await adBlock.selectAd();
 			await adBlock.switchFormat( 4 ); // switch to Wide Skyscraper ad format
 		} );
 
@@ -105,8 +109,9 @@ describe( 'Paid blocks', () => {
 			await blockEditor.publishPost();
 			await blockEditor.viewPost();
 
-			const frontend = await PostFrontendPage.init( page );
-			expect( await frontend.isRenderedBlockPresent( WordAdsBlock ) ).toBeTruthy();
+			await PostPage.init( page );
+			const renderedBlock = await WordAdsRenderedBlock.init( page );
+			expect( await renderedBlock.isContentRendered() ).toBeTruthy();
 		} );
 	} );
 } );
