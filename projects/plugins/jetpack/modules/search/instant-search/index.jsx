@@ -1,5 +1,3 @@
-/** @jsx h */
-
 // NOTE: This must be imported first before any other imports.
 // See: https://github.com/webpack/webpack/issues/2776#issuecomment-233208623
 import './set-webpack-public-path';
@@ -7,7 +5,7 @@ import './set-webpack-public-path';
 /**
  * External dependencies
  */
-import { h, render } from 'preact';
+import React, { render } from 'preact/compat';
 import { Provider } from 'react-redux';
 
 /**
