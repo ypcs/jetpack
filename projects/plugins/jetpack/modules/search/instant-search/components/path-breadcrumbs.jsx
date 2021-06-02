@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import React from 'preact/compat';
+import React from 'react';
 
 import './path-breadcrumbs.scss';
 

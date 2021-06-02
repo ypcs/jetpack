@@ -8,7 +8,7 @@ It has been modified to work with Preact, and only includes the icons that we ne
 /**
  * External dependencies
  */
-import React, { Component } from 'preact/compat';
+import React, { Component } from 'react';
 import { __ } from '@wordpress/i18n';
 
 import './style.scss';

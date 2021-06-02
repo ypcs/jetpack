@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import React, { useEffect, useRef, useState } from 'preact/compat';
+import React, { useEffect, useRef, useState } from 'react';
 
 /**
  * Internal dependencies

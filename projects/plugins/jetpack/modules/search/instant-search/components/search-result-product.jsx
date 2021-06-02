@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import React, { Component } from 'preact/compat';
+import React, { Component } from 'react';
 import { __, sprintf } from '@wordpress/i18n';
 
 /**

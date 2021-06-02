@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import React, { Component } from 'preact/compat';
+import React, { Component } from 'react';
 import { __ } from '@wordpress/i18n';
 // NOTE: We only import the debounce package here for to reduced bundle size.
 //       Do not import the entire lodash library!

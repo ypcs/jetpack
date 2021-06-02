@@ -6,7 +6,7 @@
 /**
  * External dependencies
  */
-import React from 'preact/compat';
+import React from 'react';
 import { render } from '@testing-library/preact';
 import '@testing-library/jest-dom/extend-expect';
 

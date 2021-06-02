@@ -5,7 +5,9 @@ import './set-webpack-public-path';
 /**
  * External dependencies
  */
-import React, { render } from 'preact/compat';
+// NOTE: "render" import here actually aliases to preact/compat, not React.render.
+// eslint-disable-next-line react/no-deprecated
+import React, { render } from 'react';
 import { Provider } from 'react-redux';
 
 /**

@@ -7,7 +7,7 @@
 /**
  * External dependencies
  */
-import React, { Fragment } from 'preact/compat';
+import React, { Fragment } from 'react';
 import { __ } from '@wordpress/i18n';
 
 /**

@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { __, _n, sprintf } from '@wordpress/i18n';
-import React, { Component, Fragment } from 'preact/compat';
+import React, { Component, Fragment } from 'react';
 
 /**
  * Internal dependencies

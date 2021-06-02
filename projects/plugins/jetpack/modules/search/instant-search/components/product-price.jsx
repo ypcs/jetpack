@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import React, { Component, Fragment } from 'preact/compat';
+import React, { Component, Fragment } from 'react';
 
 /**
  * Style dependencies

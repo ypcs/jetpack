@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import React, { useEffect } from 'preact/compat';
+import React, { useEffect } from 'react';
 
 /**
  * Internal dependencies

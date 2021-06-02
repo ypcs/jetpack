@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import React, { Component, createPortal, createRef } from 'preact/compat';
+import React, { Component, createPortal, createRef } from 'react';
 // NOTE: We only import the debounce package here for to reduced bundle size.
 //       Do not import the entire lodash library!
 // eslint-disable-next-line lodash/import-scope

@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import React, { createPortal } from 'preact/compat';
+import React, { createPortal } from 'react';
 import SearchFilters from './search-filters';
 import WidgetAreaContainer from './widget-area-container';
 
