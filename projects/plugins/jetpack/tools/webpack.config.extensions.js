@@ -19,6 +19,7 @@ const StaticSiteGeneratorPlugin = require( 'static-site-generator-webpack-plugin
  */
 const CopyBlockEditorAssetsPlugin = require( './copy-block-editor-assets' );
 // const { workerCount } = require( './webpack.common' ); // todo: shard...
+const { definePaletteColorsAsStaticVariables } = require( './webpack.helpers' );
 
 /**
  * Internal variables
@@ -151,6 +152,7 @@ module.exports = [
 				},
 			] ),
 			new CopyBlockEditorAssetsPlugin(),
+			definePaletteColorsAsStaticVariables(),
 		],
 	},
 	{
