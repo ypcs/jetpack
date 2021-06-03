@@ -1,0 +1,32 @@
+/**
+ * Editor styles for Search-config
+ */
+
+:root .editor-styles-wrapper {
+	background-color: #f9f9f6;
+}
+
+.edit-post-visual-editor__post-title-wrapper {
+	display: none;
+}
+
+.editor-styles-wrapper .wp-block[data-type='jetpack/search-config'],
+.wp-block[data-type='jetpack/search-config'] {
+	max-width: 90%;
+	.jetpack-instant-search {
+		position: static;
+		padding: 0;
+		background: none;
+
+		.jetpack-instant-search__search-results {
+			margin: 0;
+			max-height: 80vh;
+			max-width: initial;
+			overflow: scroll;
+		}
+
+		a {
+			pointer-events: none;
+		}
+	}
+}
