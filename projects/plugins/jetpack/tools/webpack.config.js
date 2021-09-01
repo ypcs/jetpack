@@ -44,6 +44,7 @@ module.exports = [
 		entry: {
 			admin: path.join( path.dirname( __dirname ), '_inc/client', 'admin.js' ),
 			'search-dashboard': path.join( __dirname, '../_inc/client', 'search-dashboard-entry.js' ),
+			'plugin-deactivate': path.join( __dirname, '../_inc/client', 'plugin-deactivate-entry.js' ),
 		},
 		plugins: [
 			...sharedWebpackConfig.plugins,
