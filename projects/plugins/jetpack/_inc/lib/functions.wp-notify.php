@@ -258,7 +258,7 @@ function jetpack_notify_moderator( $notify_moderator, $comment_id ) {
 	global $wpdb;
 
 	$comment = get_comment( $comment_id );
-	
+
 	if ( ! $comment ) {
 		return $notify_moderator;
 	}
