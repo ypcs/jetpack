@@ -37,6 +37,10 @@ function jetpack_notify_postauthor( $emails, $comment_id ) {
 
 	$comment = get_comment( $comment_id );
 
+	if ( ! $comment ) {
+		return $emails;
+	}
+
 	$post   = get_post( $comment->comment_post_ID );
 	$author = get_userdata( $post->post_author );
 
@@ -254,6 +258,11 @@ function jetpack_notify_moderator( $notify_moderator, $comment_id ) {
 	global $wpdb;
 
 	$comment = get_comment( $comment_id );
+	
+	if ( ! $comment ) {
+		return $notify_moderator;
+	}
+
 	$post    = get_post( $comment->comment_post_ID );
 	$user    = get_userdata( $post->post_author );
 	// Send to the administration and to the post author if the author can modify the comment.
