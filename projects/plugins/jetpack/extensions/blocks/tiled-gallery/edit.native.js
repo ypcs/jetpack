@@ -30,8 +30,8 @@ import TiledGallerySettings from './settings';
 
 const TILE_SPACING = 8;
 
-export function defaultColumnsNumber( attributes ) {
-	return Math.min( 3, attributes.images.length );
+export function defaultColumnsNumber( images ) {
+	return Math.min( 3, images.length );
 }
 
 const TiledGalleryEdit = props => {
@@ -40,7 +40,7 @@ const TiledGalleryEdit = props => {
 
 	const { className, clientId, noticeUI, onFocus } = props;
 
-	const { replaceInnerBlocks } = useDispatch( blockEditorStore );
+	const { replaceInnerBlocks, updateBlockAttributes } = useDispatch( blockEditorStore );
 
 	useEffect( () => {
 		const { width } = sizes || {};
@@ -67,6 +67,15 @@ const TiledGalleryEdit = props => {
 			} ) ),
 		[ innerBlockImages ]
 	);
+
+	useEffect( () => {
+		images?.forEach( newImage => {
+			updateBlockAttributes( newImage.clientId, {
+				...newImage.attributes,
+				id: newImage.id,
+			} );
+		} );
+	}, [ images ] );
 
 	const onSelectImages = imgs => {
 		const newBlocks = imgs.map( image => {
