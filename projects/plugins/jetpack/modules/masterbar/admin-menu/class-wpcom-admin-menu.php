@@ -48,6 +48,8 @@ class WPcom_Admin_Menu extends Admin_Menu {
 
 		$this->add_beta_testing_menu();
 
+		$this->add_woocommerce_installation_menu();
+
 		ksort( $GLOBALS['menu'] );
 	}
 
@@ -424,6 +426,18 @@ class WPcom_Admin_Menu extends Admin_Menu {
 		foreach ( array( 'openidserver', 'webhooks' ) as $page_slug ) {
 			remove_submenu_page( 'options-general.php', $page_slug );
 			$_registered_pages[ 'admin_page_' . $page_slug ] = true; // phpcs:ignore
+		}
+	}
+
+	/**
+	 * Show the calypso /woocommerce-installation/ menu item if WooCommerce is not installed or active.
+	 */
+	public function add_woocommerce_installation_menu() {
+		// Feature flagging behind site sticker for testing purposes.
+		if ( function_exists( 'has_blog_sticker' ) && has_blog_sticker( 'woop' ) ) {
+			if ( function_exists( 'is_blog_atomic' ) && ! is_blog_atomic( get_current_blog_id() ) ) {
+				parent::add_woocommerce_installation_menu();
+			}
 		}
 	}
 }

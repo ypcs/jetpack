@@ -80,6 +80,8 @@ class Atomic_Admin_Menu extends Admin_Menu {
 
 		$this->add_beta_testing_menu();
 
+		$this->add_woocommerce_installation_menu();
+
 		ksort( $GLOBALS['menu'] );
 	}
 
@@ -340,5 +342,17 @@ class Atomic_Admin_Menu extends Admin_Menu {
 		);
 
 		wp_die();
+	}
+
+	/**
+	 * Show the calypso /woocommerce-installation/ menu item if WooCommerce is not installed or active.
+	 */
+	public function add_woocommerce_installation_menu() {
+		// Gating behind woop site sticker for testing, can be removed once https://github.com/Automattic/wpcomsh/pull/750 is deployed.
+		if ( class_exists( 'Atomic_Persistent_Data' ) && ( new Atomic_Persistent_Data() )->site_sticker_woop ) {
+			if ( ! is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
+				parent::add_woocommerce_installation_menu();
+			}
+		}
 	}
 }

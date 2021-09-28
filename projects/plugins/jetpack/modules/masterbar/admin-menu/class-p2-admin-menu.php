@@ -160,6 +160,7 @@ class P2_Admin_Menu extends WPcom_Admin_Menu {
 			'https://wordpress.com/settings/general/' . $this->domain,
 			'https://wordpress.com/marketing/sharing-buttons/' . $this->domain
 		);
+		remove_menu_page( 'https://wordpress.com/woocommerce-installation/' . $this->domain );
 	}
 
 	/**
